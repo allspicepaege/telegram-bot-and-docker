@@ -11,25 +11,22 @@ bot = Bot(token=TOKEN)
 dp = Dispatcher()
 logging.basicConfig(level=logging.INFO, filename= 'mylog.log')
 
+# Все ФИО в загранпаспорте и правах написаны в верхнем регистре, 
+# поэтому наша функция переводит текст только в верхний регистр
 def russian_text_to_english(text):
-    lower_rus = ['а','б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 
+    alphabet_rus = ['а','б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 
                             'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ы', 'ъ', 'э', 'ю', 'я', 'ь']
-    lower_en = ['a','b', 'v', 'g', 'd', 'e', 'e', 'zh', 'z', 'i', 'i', 'k', 'l', 'm', 'n', 'o', 
-                            'p', 'r', 's', 't', 'u', 'f', 'kh', 'ts', 'ch', 'sh', 'shch', 'y', 'ie', 'e', 'iu', 'ia', '']
-    upper_rus = [x.upper() for x in lower_rus]
-    upper_en = [x.upper() for x in lower_en]
-    lower_rus_to_en = dict(zip(lower_rus, upper_en))
-    upper_rus_to_en = dict(zip(upper_rus, upper_en))
+    alphabet_en = ['A','B', 'V', 'G', 'D', 'E', 'E', 'ZH', 'Z', 'I', 'I', 'K', 'L', 'M', 'N', 'O', 
+                            'P', 'R', 'S', 'T', 'U', 'F', 'KH', 'TS', 'CH', 'SH', 'SHCH', 'Y', 'IE', 'E', 'IU', 'IA', '']
+    translate_rus_to_en = dict(zip(alphabet_rus, alphabet_en))
     result = []
-    for word in text.split():
+    for word in text.lower().split():
         new_word = []
         for letter in word:
-            if letter.isalpha and letter not in lower_rus and letter not in upper_rus:
+            if letter not in alphabet_rus:
                 return f'Бот предназначен для перевода инициалов написанных на кириллице на латиницу. В строке "{text}" присутствует слово "{word}", которое содержит символ "{letter}", не относящийся к кириллице!!!'
-            if letter in lower_rus:
-                new_word.append(lower_rus_to_en[letter])
-            else:
-                new_word.append(upper_rus_to_en[letter])
+            if letter in alphabet_rus:
+                new_word.append(translate_rus_to_en[letter])
         result.append(''.join(new_word))
     return ' '.join(result)
 
